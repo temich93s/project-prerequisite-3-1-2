@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>UserList</title>
+    </head>
+
+    <body>
+        <h1>Remove user</h1>
+
+        <form th:action="@{/removeUser}" method="post">
+            <label>User ID:<input type="number" name="id" required min="1"></label>
+            <br>
+            <br>
+            <a th:href="@{/userList}">
+                <button type="button">Back</button>
+            </a>
+            <button type="submit">Remove user</button>
+        </form>
+
+        <p th:if="${message}" th:text="${message}"></p>
+    </body>
+</html>

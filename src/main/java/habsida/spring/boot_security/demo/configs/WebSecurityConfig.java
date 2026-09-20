@@ -25,28 +25,16 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/", "/index").permitAll()
-                    .anyRequest().authenticated()
+                        .requestMatchers("/", "/index").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                    .successHandler(successUserHandler)
-                    .permitAll()
+                        .successHandler(successUserHandler)
+                        .permitAll()
                 )
                 .logout(logout -> logout.permitAll());
+
         return http.build();
-    }
-
-    // аутентификация inMemory
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.builder()
-                        .username("user")
-                        .password(passwordEncoder().encode("user"))
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
     }
 
     @Bean
