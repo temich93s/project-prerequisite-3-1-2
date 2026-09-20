@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8">
         <title>UserList</title>
@@ -8,7 +11,37 @@
     <body>
         <h1>User list</h1>
 
+        <div sec:authorize="isAuthenticated()">
+            <span> User:
+                <b>
+                    <span sec:authentication="name"></span>
+                </b>
+            </span>
+
+            <form th:action="@{/logout}" method="post" style="display:inline; margin-left: 10px;">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+
+        <p> <a th:href="@{/user}">Back to profile</a></p>
+
         <p th:if="${message}" th:text="${message}"></p>
+
+        <div th:if="${loadSuccess}">
+            <br>
+            <a th:href="@{/admin/addUser}">
+                <button type="button">Add user</button>
+            </a>
+            <a th:href="@{/admin/updateUser}">
+                <button type="button">Update user</button>
+            </a>
+            <a th:href="@{/admin/removeUser}">
+                <button type="button">Remove user</button>
+            </a>
+        </div>
+
+        <br>
 
         <table border="2" th:if="${loadSuccess}">
             <thead>
@@ -30,18 +63,5 @@
                 </tr>
             </tbody>
         </table>
-
-        <div th:if="${loadSuccess}">
-            <br>
-            <a th:href="@{/addUser}">
-                <button type="button">Add user</button>
-            </a>
-            <a th:href="@{/updateUser}">
-                <button type="button">Update user</button>
-            </a>
-            <a th:href="@{/removeUser}">
-                <button type="button">Remove user</button>
-            </a>
-        </div>
     </body>
 </html>

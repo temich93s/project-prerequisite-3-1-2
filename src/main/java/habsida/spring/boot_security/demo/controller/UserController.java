@@ -4,6 +4,7 @@ package habsida.spring.boot_security.demo.controller;
 import habsida.spring.boot_security.demo.exception.UserNotFoundException;
 import habsida.spring.boot_security.demo.model.User;
 import habsida.spring.boot_security.demo.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,14 @@ public class UserController {
         return "index";
     }
 
-    @GetMapping(value = "/userList")
+    @GetMapping(value = "/user")
+    public String user(ModelMap model, Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        model.addAttribute("user", user);
+        return "user";
+    }
+
+    @GetMapping(value = "/admin/userList")
     public String userList(ModelMap model) {
         try {
             List<User> users = userService.getUsers();
@@ -40,15 +48,15 @@ public class UserController {
         return "userList";
     }
 
-    @GetMapping(value = "/addUser")
+    @GetMapping(value = "/admin/addUser")
     public String addUser(ModelMap model) {
         return "addUser";
     }
 
-    @PostMapping("/addUser")
-    public String addUser(@ModelAttribute User user, ModelMap model) {
+    @PostMapping("/admin/addUser")
+    public String addUser(@ModelAttribute User user, @RequestParam String roleName, ModelMap model) {
         try {
-            userService.addUser(user);
+            userService.addUser(user, roleName);
             model.addAttribute("message", "User added successfully");
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -57,12 +65,12 @@ public class UserController {
         return "addUser";
     }
 
-    @GetMapping(value = "/removeUser")
+    @GetMapping(value = "/admin/removeUser")
     public String removeUser(ModelMap model) {
         return "removeUser";
     }
 
-    @PostMapping(value = "/removeUser")
+    @PostMapping(value = "/admin/removeUser")
     public String removeUser(@RequestParam long id, ModelMap model) {
         try {
             userService.removeUserById(id);
@@ -77,12 +85,12 @@ public class UserController {
         return "removeUser";
     }
 
-    @GetMapping(value = "/updateUser")
+    @GetMapping(value = "/admin/updateUser")
     public String updateUser(ModelMap model) {
         return "updateUser";
     }
 
-    @PostMapping(value = "/updateUser")
+    @PostMapping(value = "/admin/updateUser")
     public String updateUser(@ModelAttribute User user, ModelMap model) {
         try {
             userService.updateUser(user);
