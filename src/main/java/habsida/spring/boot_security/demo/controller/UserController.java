@@ -1,6 +1,7 @@
 package habsida.spring.boot_security.demo.controller;
 
 
+import habsida.spring.boot_security.demo.exception.RoleNotFoundException;
 import habsida.spring.boot_security.demo.exception.UserNotFoundException;
 import habsida.spring.boot_security.demo.model.User;
 import habsida.spring.boot_security.demo.service.UserService;
@@ -58,6 +59,9 @@ public class UserController {
         try {
             userService.addUser(user, roleName);
             model.addAttribute("message", "User added successfully");
+        } catch (RoleNotFoundException e) {
+            System.out.println(e.getMessage());
+            model.addAttribute("message", "Role not found");
         } catch (Exception e) {
             System.out.println(e.getMessage());
             model.addAttribute("message", "Server error, try later");
@@ -91,10 +95,13 @@ public class UserController {
     }
 
     @PostMapping(value = "/admin/updateUser")
-    public String updateUser(@ModelAttribute User user, ModelMap model) {
+    public String updateUser(@ModelAttribute User user, @RequestParam String roleName, ModelMap model) {
         try {
-            userService.updateUser(user);
+            userService.updateUser(user, roleName);
             model.addAttribute("message", "User updated successfully");
+        } catch (RoleNotFoundException e) {
+            System.out.println(e.getMessage());
+            model.addAttribute("message", "Role not found");
         } catch (UserNotFoundException e) {
             System.out.println(e.getMessage());
             model.addAttribute("message", "User not found");

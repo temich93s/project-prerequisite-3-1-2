@@ -55,9 +55,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user, String roleName) {
         userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserNotFoundException(String.valueOf(user.getId())));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Role role = roleService.findRoleByName(roleName)
+                .orElseThrow(() -> new RoleNotFoundException(roleName));
+        user.setRoles(Set.of(role));
         userRepository.save(user);
     }
 }

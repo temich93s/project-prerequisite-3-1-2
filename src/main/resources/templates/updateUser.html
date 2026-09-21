@@ -9,16 +9,30 @@
         <h1>Update user</h1>
 
         <form th:action="@{/admin/updateUser}" method="post">
-            <label>ID:<input type="number" name="id" required min="1"></label>
+            <label>ID:<input type="number" name="id" required></label>
             <br>
             <br>
-            <label>FirstName:<input type="text" name="firstName" required min="1"></label>
+            <label>Username:<input type="text" name="username" required></label>
             <br>
             <br>
-            <label>LastName:<input type="text" name="lastName" required min="1"></label>
+            <label>Password:<input type="password" name="password" required></label>
             <br>
             <br>
-            <label>Age:<input type="number" name="age" required min="1"></label>
+            <label>Role:
+                <select name="roleName" required>
+                    <option value="ROLE_USER">USER</option>
+                    <option value="ROLE_ADMIN">ADMIN</option>
+                </select>
+            </label>
+            <br>
+            <br>
+            <label>FirstName:<input type="text" name="firstName" required></label>
+            <br>
+            <br>
+            <label>LastName:<input type="text" name="lastName" required></label>
+            <br>
+            <br>
+            <label>Age:<input type="number" name="age" required></label>
             <br>
             <br>
             <label>Email:<input type="email" name="email"></label>
