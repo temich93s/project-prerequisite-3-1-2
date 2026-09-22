@@ -1,21 +1,27 @@
 package habsida.spring.boot_security.demo.controller;
 
 
+import habsida.spring.boot_security.demo.dto.UserDto;
 import habsida.spring.boot_security.demo.exception.RoleNotFoundException;
 import habsida.spring.boot_security.demo.exception.UserNotFoundException;
 import habsida.spring.boot_security.demo.model.User;
 import habsida.spring.boot_security.demo.service.UserService;
+import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Controller
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
 
@@ -38,11 +44,11 @@ public class UserController {
     @GetMapping(value = "/admin/userList")
     public String userList(ModelMap model) {
         try {
-            List<User> users = userService.getUsers();
-            model.addAttribute("users", users);
+            List<UserDto> userDtoList = userService.getUsers();
+            model.addAttribute("users", userDtoList);
             model.addAttribute("loadSuccess", true);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error("Failed to userList", e);
             model.addAttribute("message", "Server error, try later");
             model.addAttribute("loadSuccess", false);
         }
@@ -51,64 +57,93 @@ public class UserController {
 
     @GetMapping(value = "/admin/addUser")
     public String addUser(ModelMap model) {
+        model.addAttribute("userDto", new UserDto());
         return "addUser";
     }
 
     @PostMapping("/admin/addUser")
-    public String addUser(@ModelAttribute User user, @RequestParam String roleName, ModelMap model) {
-        try {
-            userService.addUser(user, roleName);
-            model.addAttribute("message", "User added successfully");
-        } catch (RoleNotFoundException e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("message", "Role not found");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("message", "Server error, try later");
+    public String addUser(
+            @Valid @ModelAttribute("userDto") UserDto userDto,
+            BindingResult bindingResult,
+            @RequestParam String roleName,
+            RedirectAttributes redirectAttributes
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "addUser";
         }
-        return "addUser";
+        try {
+            userService.addUser(userDto, roleName);
+            redirectAttributes.addFlashAttribute("message", "User added successfully");
+        } catch (RoleNotFoundException e) {
+            logger.error("Failed to addUser", e);
+            redirectAttributes.addFlashAttribute("message", "Role not found");
+        } catch (Exception e) {
+            logger.error("Failed to addUser", e);
+            redirectAttributes.addFlashAttribute("message", "Server error, try later");
+        }
+        return "redirect:/admin/userList";
     }
 
-    @GetMapping(value = "/admin/removeUser")
-    public String removeUser(ModelMap model) {
-        return "removeUser";
-    }
-
-    @PostMapping(value = "/admin/removeUser")
-    public String removeUser(@RequestParam long id, ModelMap model) {
+    @PostMapping(value = "/admin/removeUser/{id}")
+    public String removeUser(
+            @PathVariable long id,
+            RedirectAttributes redirectAttributes
+    ) {
         try {
             userService.removeUserById(id);
-            model.addAttribute("message", "User removed successfully");
+            redirectAttributes.addFlashAttribute("message", "User removed successfully");
         } catch (UserNotFoundException e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("message", "User not found");
+            logger.error("Failed to removeUser id {}", id, e);
+            redirectAttributes.addFlashAttribute("message", "User not found");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("message", "Server error, try later");
+            logger.error("Failed to removeUser id {}", id, e);
+            redirectAttributes.addFlashAttribute("message", "Server error, try later");
         }
-        return "removeUser";
+        return "redirect:/admin/userList";
     }
 
-    @GetMapping(value = "/admin/updateUser")
-    public String updateUser(ModelMap model) {
-        return "updateUser";
-    }
-
-    @PostMapping(value = "/admin/updateUser")
-    public String updateUser(@ModelAttribute User user, @RequestParam String roleName, ModelMap model) {
+    @GetMapping(value = "/admin/updateUser/{id}")
+    public String updateUser(
+            @PathVariable long id,
+            ModelMap model,
+            RedirectAttributes redirectAttributes
+    ) {
         try {
-            userService.updateUser(user, roleName);
-            model.addAttribute("message", "User updated successfully");
-        } catch (RoleNotFoundException e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("message", "Role not found");
+            UserDto userDto = userService.getUserById(id);
+            model.addAttribute("userDto", userDto);
+            return "updateUser";
         } catch (UserNotFoundException e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("message", "User not found");
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            model.addAttribute("message", "Server error, try later");
+            logger.error("Failed to updateUser id {}", id, e);
+            redirectAttributes.addFlashAttribute("message", "User not found");
+            return "redirect:/admin/userList";
         }
-        return "updateUser";
+    }
+
+    @PostMapping(value = "/admin/updateUser/{id}")
+    public String updateUser(
+            @PathVariable long id,
+            @Valid @ModelAttribute("userDto") UserDto userDto,
+            @RequestParam String roleName,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes
+    ) {
+        if (bindingResult.hasErrors()) {
+            return "updateUser";
+        }
+        try {
+            userDto.setId(id);
+            userService.updateUser(userDto, roleName);
+            redirectAttributes.addFlashAttribute("message", "User updated successfully");
+        } catch (RoleNotFoundException e) {
+            logger.error("Failed to updateUser id {}", id, e);
+            redirectAttributes.addFlashAttribute("message", "Role not found");
+        } catch (UserNotFoundException e) {
+            logger.error("Failed to updateUser id {}", id, e);
+            redirectAttributes.addFlashAttribute("message", "User not found");
+        } catch (Exception e) {
+            logger.error("Failed to updateUser id {}", id, e);
+            redirectAttributes.addFlashAttribute("message", "Server error, try later");
+        }
+        return "redirect:/admin/userList";
     }
 }

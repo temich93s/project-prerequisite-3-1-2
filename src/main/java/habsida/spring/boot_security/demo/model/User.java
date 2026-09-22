@@ -1,11 +1,13 @@
 package habsida.spring.boot_security.demo.model;
 
+import habsida.spring.boot_security.demo.dto.UserDto;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -138,5 +140,20 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
+    }
+
+    // Mapping
+
+    public UserDto toUserDto() {
+        UserDto userDto = new UserDto();
+        userDto.setId(this.id);
+        userDto.setUsername(username);
+        userDto.setPassword(password);
+        userDto.setRoles(roles.stream().map(Role::toRoleDto).collect(Collectors.toSet()));
+        userDto.setFirstName(this.firstName);
+        userDto.setLastName(this.lastName);
+        userDto.setAge(this.age);
+        userDto.setEmail(this.email);
+        return userDto;
     }
 }

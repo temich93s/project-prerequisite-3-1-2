@@ -8,42 +8,43 @@
     <body>
         <h1>Update user</h1>
 
-        <form th:action="@{/admin/updateUser}" method="post">
-            <label>ID:<input type="number" name="id" required></label>
-            <br>
-            <br>
-            <label>Username:<input type="text" name="username" required></label>
-            <br>
-            <br>
-            <label>Password:<input type="password" name="password" required></label>
-            <br>
-            <br>
-            <label>Role:
-                <select name="roleName" required>
-                    <option value="ROLE_USER">USER</option>
-                    <option value="ROLE_ADMIN">ADMIN</option>
-                </select>
-            </label>
-            <br>
-            <br>
-            <label>FirstName:<input type="text" name="firstName" required></label>
-            <br>
-            <br>
-            <label>LastName:<input type="text" name="lastName" required></label>
-            <br>
-            <br>
-            <label>Age:<input type="number" name="age" required></label>
-            <br>
-            <br>
-            <label>Email:<input type="email" name="email"></label>
-            <br>
-            <br>
-            <a th:href="@{/admin/userList}">
-                <button type="button">Back</button>
-            </a>
-            <button type="submit">Update user</button>
-        </form>
-
-        <p th:if="${message}" th:text="${message}"></p>
+        <div th:if="${userDto}">
+            <form th:action="@{/admin/updateUser/{id}(id=${userDto.id})}" th:object="${userDto}" method="post">
+                <label>Username:<input type="text" th:field="*{username}"></label>
+                <label th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></label>
+                <br>
+                <br>
+                <label>Password:<input type="password" th:field="*{password}"></label>
+                <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></label>
+                <br>
+                <br>
+                <label>Role:
+                    <select name="roleName" required>
+                        <option value="ROLE_USER">USER</option>
+                        <option value="ROLE_ADMIN">ADMIN</option>
+                    </select>
+                </label>
+                <br>
+                <br>
+                <label>FirstName:<input type="text" th:field="*{firstName}"></label>
+                <label th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></label>
+                <br>
+                <br>
+                <label>LastName:<input type="text" th:field="*{lastName}"></label>
+                <label th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></label>
+                <br>
+                <br>
+                <label>Age:<input type="number" th:field="*{age}"></label>
+                <label th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></label>
+                <br>
+                <br>
+                <label>Email:<input type="email" th:field="*{email}"></label>
+                <label th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></label>
+                <br>
+                <br>
+                <a th:href="@{/admin/userList}"><button type="button">Back</button></a>
+                <button type="submit">Update user</button>
+            </form>
+        </div>
     </body>
 </html>

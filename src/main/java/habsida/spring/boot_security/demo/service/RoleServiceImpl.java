@@ -1,5 +1,6 @@
 package habsida.spring.boot_security.demo.service;
 
+import habsida.spring.boot_security.demo.dto.RoleDto;
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.repository.RoleRepository;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Role> findRoleByName(String name) {
-        return roleRepository.findByName(name);
+    public Optional<RoleDto> findRoleByName(String name) {
+        return roleRepository.findByName(name).map(Role::toRoleDto);
     }
 }

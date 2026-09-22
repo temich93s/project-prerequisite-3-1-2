@@ -16,28 +16,13 @@
                 <b><span sec:authentication="name"></span></b>
             </span>
 
-            <form th:action="@{/logout}" method="post" style="display:inline; margin-left: 10px;">
+            <form th:action="@{/logout}" method="post" style="display: inline">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <button type="submit">Logout</button>
             </form>
 
             <a th:href="@{/user}">
                 <button type="button">Profile</button>
-            </a>
-        </div>
-
-        <p th:if="${message}" th:text="${message}"></p>
-
-        <div th:if="${loadSuccess}">
-            <br>
-            <a th:href="@{/admin/addUser}">
-                <button type="button">Add user</button>
-            </a>
-            <a th:href="@{/admin/updateUser}">
-                <button type="button">Update user</button>
-            </a>
-            <a th:href="@{/admin/removeUser}">
-                <button type="button">Remove user</button>
             </a>
         </div>
 
@@ -53,6 +38,8 @@
                     <th>LastName</th>
                     <th>Age</th>
                     <th>Email</th>
+                    <th>Update</th>
+                    <th>Remove</th>
                 </tr>
             </thead>
             <tbody>
@@ -64,8 +51,19 @@
                     <td th:text="${user.lastName}"></td>
                     <td th:text="${user.age}"></td>
                     <td th:text="${user.email}"></td>
+                    <td><a th:href="@{/admin/updateUser/{id}(id=${user.id})}"><button type="button">Update</button></a></td>
+                    <td><form th:action="@{/admin/removeUser/{id}(id=${user.id})}" method="post"><button type="submit">Remove</button></form></td>
                 </tr>
             </tbody>
         </table>
+
+        <div th:if="${loadSuccess}">
+            <br>
+            <a th:href="@{/admin/addUser}">
+                <button type="button">Add user</button>
+            </a>
+        </div>
+
+        <p th:if="${message}" th:text="${message}"></p>
     </body>
 </html>
