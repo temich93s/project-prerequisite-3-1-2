@@ -5,6 +5,7 @@ import habsida.spring.boot_security.demo.dto.UserDto;
 import habsida.spring.boot_security.demo.exception.RoleNotFoundException;
 import habsida.spring.boot_security.demo.exception.UserNotFoundException;
 import habsida.spring.boot_security.demo.model.User;
+import habsida.spring.boot_security.demo.service.RoleService;
 import habsida.spring.boot_security.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -24,14 +25,21 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
+    private final RoleService roleService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping(value = "/")
-    public String index(ModelMap model) {
+    public String index() {
         return "index";
+    }
+
+    @GetMapping(value = "/accessDenied")
+    public String accessDenied() {
+        return "accessDenied";
     }
 
     @GetMapping(value = "/user")
@@ -58,6 +66,7 @@ public class UserController {
     @GetMapping(value = "/admin/addUser")
     public String addUser(ModelMap model) {
         model.addAttribute("userDto", new UserDto());
+        model.addAttribute("roleNames", roleService.findAllRolesNames());
         return "addUser";
     }
 
@@ -65,14 +74,18 @@ public class UserController {
     public String addUser(
             @Valid @ModelAttribute("userDto") UserDto userDto,
             BindingResult bindingResult,
-            @RequestParam String roleName,
+            ModelMap model,
             RedirectAttributes redirectAttributes
     ) {
+        if (userDto.getPassword() == null || userDto.getPassword().isBlank()) {
+            bindingResult.rejectValue("password", "password.empty", "Password is required");
+        }
         if (bindingResult.hasErrors()) {
+            model.addAttribute("roleNames", roleService.findAllRolesNames());
             return "addUser";
         }
         try {
-            userService.addUser(userDto, roleName);
+            userService.addUser(userDto);
             redirectAttributes.addFlashAttribute("message", "User added successfully");
         } catch (RoleNotFoundException e) {
             logger.error("Failed to addUser", e);
@@ -111,6 +124,7 @@ public class UserController {
         try {
             UserDto userDto = userService.getUserById(id);
             model.addAttribute("userDto", userDto);
+            model.addAttribute("roleNames", roleService.findAllRolesNames());
             return "updateUser";
         } catch (UserNotFoundException e) {
             logger.error("Failed to updateUser id {}", id, e);
@@ -123,16 +137,17 @@ public class UserController {
     public String updateUser(
             @PathVariable long id,
             @Valid @ModelAttribute("userDto") UserDto userDto,
-            @RequestParam String roleName,
             BindingResult bindingResult,
+            ModelMap model,
             RedirectAttributes redirectAttributes
     ) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("roleNames", roleService.findAllRolesNames());
             return "updateUser";
         }
         try {
             userDto.setId(id);
-            userService.updateUser(userDto, roleName);
+            userService.updateUser(userDto);
             redirectAttributes.addFlashAttribute("message", "User updated successfully");
         } catch (RoleNotFoundException e) {
             logger.error("Failed to updateUser id {}", id, e);

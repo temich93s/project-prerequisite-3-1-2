@@ -18,12 +18,10 @@
                 <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></label>
                 <br>
                 <br>
-                <label>Role:
-                    <select name="roleName" required>
-                        <option value="ROLE_USER">USER</option>
-                        <option value="ROLE_ADMIN">ADMIN</option>
-                    </select>
-                </label>
+                <label>Role:<select th:field="*{roleNames}" multiple>
+                    <option th:each="name : ${roleNames}" th:value="${name}" th:text="${name}"></option>
+                </select></label>
+                <label th:if="${#fields.hasErrors('roleNames')}" th:errors="*{roleNames}"></label>
                 <br>
                 <br>
                 <label>FirstName:<input type="text" th:field="*{firstName}"></label>

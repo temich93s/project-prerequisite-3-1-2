@@ -146,14 +146,14 @@ public class User implements UserDetails {
 
     public UserDto toUserDto() {
         UserDto userDto = new UserDto();
-        userDto.setId(this.id);
+        userDto.setId(id);
         userDto.setUsername(username);
         userDto.setPassword(password);
-        userDto.setRoles(roles.stream().map(Role::toRoleDto).collect(Collectors.toSet()));
-        userDto.setFirstName(this.firstName);
-        userDto.setLastName(this.lastName);
-        userDto.setAge(this.age);
-        userDto.setEmail(this.email);
+        userDto.setRoleNames(roles.stream().map(Role::getName).collect(Collectors.toSet()));
+        userDto.setFirstName(firstName);
+        userDto.setLastName(lastName);
+        userDto.setAge(age);
+        userDto.setEmail(email);
         return userDto;
     }
 }

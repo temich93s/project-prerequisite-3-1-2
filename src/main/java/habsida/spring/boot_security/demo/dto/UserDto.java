@@ -1,12 +1,13 @@
 package habsida.spring.boot_security.demo.dto;
 
+import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public final class UserDto {
     private long id;
@@ -14,10 +15,10 @@ public final class UserDto {
     @NotBlank(message = "Username is required")
     private String username;
 
-    @NotBlank(message = "Password is required")
     private String password;
 
-    private Set<RoleDto> roles;
+    @NotEmpty(message = "Select at least one role")
+    private Set<String> roleNames;
 
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -58,12 +59,12 @@ public final class UserDto {
         this.password = password;
     }
 
-    public Set<RoleDto> getRoles() {
-        return roles;
+    public Set<String> getRoleNames() {
+        return roleNames;
     }
 
-    public void setRoles(Set<RoleDto> roles) {
-        this.roles = roles;
+    public void setRoleNames(Set<String> roleNames) {
+        this.roleNames = roleNames;
     }
 
     public String getFirstName() {
@@ -100,12 +101,12 @@ public final class UserDto {
 
     // Mapping
 
-    public User toUser() {
+    public User toUser(Set<Role> roles) {
         User user = new User();
         user.setId(id);
         user.setUsername(username);
         user.setPassword(password);
-        user.setRoles(roles.stream().map(RoleDto::toRole).collect(Collectors.toSet()));
+        user.setRoles(roles);
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setAge(age);

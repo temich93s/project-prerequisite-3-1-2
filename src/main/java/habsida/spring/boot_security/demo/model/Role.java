@@ -1,6 +1,6 @@
 package habsida.spring.boot_security.demo.model;
 
-import habsida.spring.boot_security.demo.dto.RoleDto;
+//import habsida.spring.boot_security.demo.dto.RoleDto;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -13,6 +13,14 @@ public class Role implements GrantedAuthority {
     private Long id;
 
     private String name;
+
+    // Constructor
+
+    public Role() {}
+
+    public Role(String name) {
+        this.name = name;
+    }
 
     // Getter/Setter
 
@@ -35,14 +43,5 @@ public class Role implements GrantedAuthority {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    // Mapping
-
-    public RoleDto toRoleDto() {
-        RoleDto roleDto = new RoleDto();
-        roleDto.setId(id);
-        roleDto.setName(name);
-        return roleDto;
     }
 }
