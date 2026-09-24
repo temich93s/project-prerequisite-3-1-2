@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head>
         <meta charset="UTF-8">
         <title>UserList</title>
     </head>
 
-    <body>
+    <body sec:authorize="hasRole('ADMIN')">
         <h1>Update user</h1>
 
         <div th:if="${userDto}">
             <form th:action="@{/admin/updateUser/{id}(id=${userDto.id})}" th:object="${userDto}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 <label>Username:<input type="text" th:field="*{username}"></label>
                 <label th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></label>
                 <br>
