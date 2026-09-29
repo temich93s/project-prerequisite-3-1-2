@@ -17,7 +17,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
 
     @Column(name = "password")
@@ -144,11 +144,10 @@ public class User implements UserDetails {
 
     // Mapping
 
-    public UserDto toUserDto() {
+    public UserDto toUserDtoWithoutPassword() {
         UserDto userDto = new UserDto();
         userDto.setId(id);
         userDto.setUsername(username);
-        userDto.setPassword(password);
         userDto.setRoleNames(roles.stream().map(Role::getName).collect(Collectors.toSet()));
         userDto.setFirstName(firstName);
         userDto.setLastName(lastName);

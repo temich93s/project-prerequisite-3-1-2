@@ -20,7 +20,7 @@
             <button type="submit">Logout</button>
         </form>
 
-        <span sec:authorize="hasRole('USER')">
+        <span sec:authorize="hasAnyRole('ADMIN', 'USER')">
             <a th:href="@{/user}"><button type="button">Profile</button></a>
             <br>
         </span>

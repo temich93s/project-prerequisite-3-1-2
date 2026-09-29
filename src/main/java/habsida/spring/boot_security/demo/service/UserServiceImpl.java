@@ -2,6 +2,7 @@ package habsida.spring.boot_security.demo.service;
 
 import habsida.spring.boot_security.demo.dto.UserDto;
 import habsida.spring.boot_security.demo.exception.RoleNotFoundException;
+import habsida.spring.boot_security.demo.exception.UserAlreadyExistsException;
 import habsida.spring.boot_security.demo.exception.UserNotFoundException;
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(User::toUserDto)
+                .map(User::toUserDtoWithoutPassword)
                 .toList();
     }
 
@@ -45,12 +47,16 @@ public class UserServiceImpl implements UserService {
     public UserDto getUserById(long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.valueOf(id)))
-                .toUserDto();
+                .toUserDtoWithoutPassword();
     }
 
     @Transactional
     @Override
     public void addUser(UserDto userDto) {
+        if (userRepository.existsByUsername(userDto.getUsername())) {
+            throw new UserAlreadyExistsException(userDto.getUsername());
+        }
+
         Set<Role> roles = new HashSet<>();
         for (String roleName : userDto.getRoleNames()) {
             roles.add(roleService.findRoleByName(roleName)
@@ -73,6 +79,11 @@ public class UserServiceImpl implements UserService {
     public void updateUser(UserDto userDto) {
         User user = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new UserNotFoundException(String.valueOf(userDto.getId())));
+
+        Optional<User> userWithSameUsername = userRepository.findByUsername(userDto.getUsername());
+        if (userWithSameUsername.isPresent() && userWithSameUsername.get().getId() != user.getId()) {
+            throw new UserAlreadyExistsException(userDto.getUsername());
+        }
 
         Set<Role> roles = new HashSet<>();
         for (String roleName : userDto.getRoleNames()) {
