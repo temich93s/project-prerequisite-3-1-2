@@ -4,11 +4,13 @@ import habsida.spring.boot_security.demo.dto.UserDto;
 import habsida.spring.boot_security.demo.exception.RoleNotFoundException;
 import habsida.spring.boot_security.demo.exception.UserAlreadyExistsException;
 import habsida.spring.boot_security.demo.exception.UserNotFoundException;
+import habsida.spring.boot_security.demo.model.User;
 import habsida.spring.boot_security.demo.service.RoleService;
 import habsida.spring.boot_security.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -31,10 +33,12 @@ public class AdminController {
     }
 
     @GetMapping(value = "/admin/userList")
-    public String userList(ModelMap model) {
+    public String userList(ModelMap model, Authentication authentification) {
         try {
             List<UserDto> userDtoList = userService.getUsers();
             model.addAttribute("users", userDtoList);
+            UserDto user = ((User) authentification.getPrincipal()).toUserDtoWithoutPassword();
+            model.addAttribute("user", user);
             model.addAttribute("loadSuccess", true);
         } catch (Exception e) {
             logger.error("Failed to userList", e);
@@ -45,7 +49,9 @@ public class AdminController {
     }
 
     @GetMapping(value = "/admin/addUser")
-    public String addUser(ModelMap model) {
+    public String addUser(ModelMap model, Authentication authentification) {
+        UserDto user = ((User) authentification.getPrincipal()).toUserDtoWithoutPassword();
+        model.addAttribute("user", user);
         model.addAttribute("userDto", new UserDto());
         model.addAttribute("roleNames", roleService.findAllRolesNames());
         return "addUser";

@@ -113,4 +113,8 @@ public final class UserDto {
         user.setEmail(email);
         return user;
     }
+
+    public String getRoleNamesAsString() {
+        return "[" + String.join(", ", roleNames) + "]";
+    }
 }
