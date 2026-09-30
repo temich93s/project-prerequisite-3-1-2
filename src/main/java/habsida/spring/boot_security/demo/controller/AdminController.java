@@ -117,15 +117,6 @@ public class AdminController {
             BindingResult bindingResult,
             RedirectAttributes redirectAttributes
     ) {
-        logger.info("username = '{}'", userDto.getUsername());
-        logger.info("firstName = '{}'", userDto.getFirstName());
-        logger.info("lastName = '{}'", userDto.getLastName());
-        logger.info("age = {}", userDto.getAge());
-        logger.info("email = '{}'", userDto.getEmail());
-        logger.info("roles = {}", userDto.getRoleDtoNames());
-
-        logger.info("errors = {}", bindingResult.getFieldErrors());
-
         if (bindingResult.hasErrors()) {
             String errorMessage = bindingResult.getFieldErrors().stream()
                     .map(error -> error.getDefaultMessage())

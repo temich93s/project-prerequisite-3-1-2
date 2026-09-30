@@ -1,6 +1,5 @@
 package habsida.spring.boot_security.demo.model;
 
-//import habsida.spring.boot_security.demo.dto.RoleDto;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 
