@@ -17,9 +17,6 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "username", unique = true, nullable = false)
-    private String username;
-
     @Column(name = "password")
     private String password;
 
@@ -40,7 +37,7 @@ public class User implements UserDetails {
     @Column(name = "age")
     private int age;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     // Constructor
@@ -55,10 +52,6 @@ public class User implements UserDetails {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public void setPassword(String password) {
@@ -119,7 +112,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -147,7 +140,6 @@ public class User implements UserDetails {
     public UserDto toUserDtoWithoutPassword() {
         UserDto userDto = new UserDto();
         userDto.setId(id);
-        userDto.setUsername(username);
         userDto.setRoleDtoNames(roles.stream().map(Role::getRoleDtoName).collect(Collectors.toSet()));
         userDto.setFirstName(firstName);
         userDto.setLastName(lastName);

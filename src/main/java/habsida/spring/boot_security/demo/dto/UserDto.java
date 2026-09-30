@@ -12,9 +12,6 @@ import java.util.Set;
 public final class UserDto {
     private long id;
 
-    @NotBlank(message = "Username is required")
-    private String username;
-
     private String password;
 
     @NotEmpty(message = "Select at least one role")
@@ -41,14 +38,6 @@ public final class UserDto {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {
@@ -104,7 +93,6 @@ public final class UserDto {
     public User toUser(Set<Role> roles) {
         User user = new User();
         user.setId(id);
-        user.setUsername(username);
         user.setPassword(password);
         user.setRoles(roles);
         user.setFirstName(firstName);

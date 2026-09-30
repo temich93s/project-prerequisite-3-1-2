@@ -84,7 +84,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("message", "Role not found");
         } catch (UserAlreadyExistsException e) {
             logger.error("Failed to addUser", e);
-            redirectAttributes.addFlashAttribute("message", "User with same username already exists");
+            redirectAttributes.addFlashAttribute("message", "User with same email already exists");
         } catch (Exception e) {
             logger.error("Failed to addUser", e);
             redirectAttributes.addFlashAttribute("message", "Server error, try later");
@@ -137,7 +137,7 @@ public class AdminController {
             redirectAttributes.addFlashAttribute("message", "User not found");
         } catch (UserAlreadyExistsException e) {
             logger.error("Failed to updateUser id {}", id, e);
-            redirectAttributes.addFlashAttribute("message", "User with same username already exists");
+            redirectAttributes.addFlashAttribute("message", "User with same email already exists");
         } catch (Exception e) {
             logger.error("Failed to updateUser id {}", id, e);
             redirectAttributes.addFlashAttribute("message", "Server error, try later");
