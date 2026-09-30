@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class AdminController {
@@ -37,8 +38,9 @@ public class AdminController {
         try {
             List<UserDto> userDtoList = userService.getUsers();
             model.addAttribute("users", userDtoList);
-            UserDto user = ((User) authentification.getPrincipal()).toUserDtoWithoutPassword();
-            model.addAttribute("user", user);
+            UserDto currentUser = ((User) authentification.getPrincipal()).toUserDtoWithoutPassword();
+            model.addAttribute("currentUser", currentUser);
+            model.addAttribute("roleDtoNames", roleService.findAllRoleDtoNames());
             model.addAttribute("loadSuccess", true);
         } catch (Exception e) {
             logger.error("Failed to userList", e);
@@ -51,9 +53,9 @@ public class AdminController {
     @GetMapping(value = "/admin/addUser")
     public String addUser(ModelMap model, Authentication authentification) {
         UserDto user = ((User) authentification.getPrincipal()).toUserDtoWithoutPassword();
-        model.addAttribute("user", user);
+        model.addAttribute("currentUser", user);
         model.addAttribute("userDto", new UserDto());
-        model.addAttribute("roleNames", roleService.findAllRolesNames());
+        model.addAttribute("roleDtoNames", roleService.findAllRoleDtoNames());
         return "addUser";
     }
 
@@ -62,13 +64,16 @@ public class AdminController {
             @Valid @ModelAttribute("userDto") UserDto userDto,
             BindingResult bindingResult,
             ModelMap model,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            Authentication authentification
     ) {
         if (userDto.getPassword() == null || userDto.getPassword().isBlank()) {
             bindingResult.rejectValue("password", "password.empty", "Password is required");
         }
         if (bindingResult.hasErrors()) {
-            model.addAttribute("roleNames", roleService.findAllRolesNames());
+            UserDto user = ((User) authentification.getPrincipal()).toUserDtoWithoutPassword();
+            model.addAttribute("currentUser", user);
+            model.addAttribute("roleDtoNames", roleService.findAllRoleDtoNames());
             return "addUser";
         }
         try {
@@ -105,36 +110,30 @@ public class AdminController {
         return "redirect:/admin/userList";
     }
 
-    @GetMapping(value = "/admin/updateUser/{id}")
-    public String updateUser(
-            @PathVariable long id,
-            ModelMap model,
-            RedirectAttributes redirectAttributes
-    ) {
-        try {
-            UserDto userDto = userService.getUserById(id);
-            model.addAttribute("userDto", userDto);
-            model.addAttribute("roleNames", roleService.findAllRolesNames());
-            return "updateUser";
-        } catch (UserNotFoundException e) {
-            logger.error("Failed to updateUser id {}", id, e);
-            redirectAttributes.addFlashAttribute("message", "User not found");
-            return "redirect:/admin/userList";
-        }
-    }
-
     @PostMapping(value = "/admin/updateUser/{id}")
     public String updateUser(
             @PathVariable long id,
             @Valid @ModelAttribute("userDto") UserDto userDto,
             BindingResult bindingResult,
-            ModelMap model,
             RedirectAttributes redirectAttributes
     ) {
+        logger.info("username = '{}'", userDto.getUsername());
+        logger.info("firstName = '{}'", userDto.getFirstName());
+        logger.info("lastName = '{}'", userDto.getLastName());
+        logger.info("age = {}", userDto.getAge());
+        logger.info("email = '{}'", userDto.getEmail());
+        logger.info("roles = {}", userDto.getRoleDtoNames());
+
+        logger.info("errors = {}", bindingResult.getFieldErrors());
+
         if (bindingResult.hasErrors()) {
-            model.addAttribute("roleNames", roleService.findAllRolesNames());
-            return "updateUser";
+            String errorMessage = bindingResult.getFieldErrors().stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            redirectAttributes.addFlashAttribute("message", errorMessage);
+            return "redirect:/admin/userList";
         }
+
         try {
             userDto.setId(id);
             userService.updateUser(userDto);

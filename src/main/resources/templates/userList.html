@@ -17,9 +17,9 @@
 <body sec:authorize="hasAnyRole('ADMIN', 'USER')">
     <nav class="navbar bg-dark px-4 py-2">
         <div class="d-flex gap-2 text-white">
-            <span th:text="${user.getEmail()}"></span>
+            <span th:text="${currentUser.getEmail()}"></span>
             <span>with roles</span>
-            <span th:text="${user.getRoleNamesAsString()}"></span>
+            <span th:text="${currentUser.getRoleDtoNamesAsString()}"></span>
         </div>
 
         <div class="d-flex gap-2">
@@ -76,11 +76,16 @@
                                     <td th:text="${user.lastName}"></td>
                                     <td th:text="${user.age}"></td>
                                     <td th:text="${user.email}"></td>
-                                    <td th:text="${user.getRoleNamesAsString()}"></td>
+                                    <td th:text="${user.getRoleDtoNamesAsString()}"></td>
                                     <td>
-                                        <a th:href="@{/admin/updateUser/{id}(id=${user.id})}">
-                                            <button type="button" class="btn btn-info text-white">Edit</button>
-                                        </a>
+                                        <button type="button"
+                                                class="btn btn-info text-white"
+                                                data-bs-toggle="modal"
+                                                th:data-bs-target="'#editModal' + ${user.id}"
+                                        >Edit</button>
+                                        <div class="modal fade" th:id="'editModal' + ${user.id}" tabindex="-1">
+                                            <div th:replace="~{fragments/updateUser :: updateUser(${user})}"></div>
+                                        </div>
                                     </td>
                                     <td>
                                         <form th:action="@{/admin/removeUser/{id}(id=${user.id})}" method="post">
@@ -98,5 +103,7 @@
             </main>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

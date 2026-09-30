@@ -19,7 +19,7 @@
         <div class="d-flex gap-2 text-white">
             <span th:text="${user.getEmail()}"></span>
             <span>with roles</span>
-            <span th:text="${user.getRoleNamesAsString()}"></span>
+            <span th:text="${user.getRoleDtoNamesAsString()}"></span>
         </div>
 
         <div class="d-flex gap-2">
@@ -65,7 +65,7 @@
                                     <td th:text="${user.getLastName()}"></td>
                                     <td th:text="${user.getAge()}"></td>
                                     <td th:text="${user.getEmail()}"></td>
-                                    <td th:text="${user.getRoleNamesAsString()}"></td>
+                                    <td th:text="${user.getRoleDtoNamesAsString()}"></td>
                                 </tr>
                             </tbody>
                         </table>

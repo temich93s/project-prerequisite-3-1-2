@@ -18,7 +18,7 @@ public final class UserDto {
     private String password;
 
     @NotEmpty(message = "Select at least one role")
-    private Set<String> roleNames;
+    private Set<String> roleDtoNames;
 
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -59,12 +59,12 @@ public final class UserDto {
         this.password = password;
     }
 
-    public Set<String> getRoleNames() {
-        return roleNames;
+    public Set<String> getRoleDtoNames() {
+        return roleDtoNames;
     }
 
-    public void setRoleNames(Set<String> roleNames) {
-        this.roleNames = roleNames;
+    public void setRoleDtoNames(Set<String> roleDtoNames) {
+        this.roleDtoNames = roleDtoNames;
     }
 
     public String getFirstName() {
@@ -114,7 +114,7 @@ public final class UserDto {
         return user;
     }
 
-    public String getRoleNamesAsString() {
-        return "[" + String.join(", ", roleNames) + "]";
+    public String getRoleDtoNamesAsString() {
+        return "[" + String.join(", ", roleDtoNames) + "]";
     }
 }

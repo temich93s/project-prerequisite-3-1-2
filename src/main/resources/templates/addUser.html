@@ -17,9 +17,9 @@
 <body sec:authorize="hasRole('ADMIN')">
     <nav class="navbar bg-dark px-4 py-2">
         <div class="d-flex gap-2 text-white">
-            <span th:text="${user.getEmail()}"></span>
+            <span th:text="${currentUser.getEmail()}"></span>
             <span>with roles</span>
-            <span th:text="${user.getRoleNamesAsString()}"></span>
+            <span th:text="${currentUser.getRoleDtoNamesAsString()}"></span>
         </div>
 
         <div class="d-flex gap-2">
@@ -55,39 +55,57 @@
                     <div class="card-header fw-bold">Add new users</div>
 
                     <div class="card-body">
-                        <form th:action="@{/admin/addUser}" th:object="${userDto}" method="post">
+                        <form class="d-flex flex-column align-items-center"
+                              th:action="@{/admin/addUser}"
+                              th:object="${userDto}"
+                              method="post">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                            <label>Username:<input type="text" th:field="*{username}"></label>
-                            <label th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></label>
-                            <br>
-                            <br>
-                            <label>Password:<input type="password" th:field="*{password}"></label>
-                            <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></label>
-                            <br>
-                            <br>
-                            <label>Role:<select th:field="*{roleNames}" multiple>
-                                <option th:each="name : ${roleNames}" th:value="${name}" th:text="${name}"></option>
-                            </select></label>
-                            <label th:if="${#fields.hasErrors('roleNames')}" th:errors="*{roleNames}"></label>
-                            <br>
-                            <br>
-                            <label>FirstName:<input type="text" th:field="*{firstName}"></label>
-                            <label th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></label>
-                            <br>
-                            <br>
-                            <label>LastName:<input type="text" th:field="*{lastName}"></label>
-                            <label th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></label>
-                            <br>
-                            <br>
-                            <label>Age:<input type="number" th:field="*{age}"></label>
-                            <label th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></label>
-                            <br>
-                            <br>
-                            <label>Email:<input type="email" th:field="*{email}"></label>
-                            <label th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></label>
-                            <br>
-                            <br>
-                            <button type="submit">Add user</button>
+
+                            <div class="mb-3 w-50 text-center">
+                            <label class="form-label fw-bold">Username</label>
+                            <input class="form-control" type="text" th:field="*{username}">
+                            <label class="form-label text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></label>
+                            </div>
+
+                            <div class="mb-3 w-50 text-center">
+                            <label class="form-label fw-bold">FirstName</label>
+                            <input class="form-control" type="text" th:field="*{firstName}">
+                            <label class="form-label text-danger" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></label>
+                            </div>
+
+                            <div class="mb-3 w-50 text-center">
+                            <label class="form-label fw-bold">LastName</label>
+                            <input class="form-control" type="text" th:field="*{lastName}">
+                            <label class="form-label text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></label>
+                            </div>
+
+                            <div class="mb-3 w-50 text-center">
+                            <label class="form-label fw-bold">Age</label>
+                            <input class="form-control" type="number" th:field="*{age}">
+                            <label class="form-label text-danger" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></label>
+                            </div>
+
+                            <div class="mb-3 w-50 text-center">
+                            <label class="form-label fw-bold">Email</label>
+                            <input class="form-control" type="email" th:field="*{email}">
+                            <label class="form-label text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></label>
+                            </div>
+
+                            <div class="mb-3 w-50 text-center">
+                                <label class="form-label fw-bold">Password</label>
+                                <input class="form-control" type="password" th:field="*{password}">
+                                <label class="form-label text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></label>
+                            </div>
+
+                            <div class="mb-3 w-50 text-center">
+                                <label class="form-label fw-bold">Roles</label>
+                                <select class="form-select" multiple size="2" th:field="*{roleDtoNames}">
+                                    <option th:each="name : ${roleDtoNames}" th:value="${name}" th:text="${name}"></option>
+                                </select>
+                                <label class="form-label text-danger" th:if="${#fields.hasErrors('roleDtoNames')}" th:errors="*{roleDtoNames}"></label>
+                            </div>
+
+                            <button type="submit" class="btn btn-success">Add new user</button>
                         </form>
                     </div>
                 </div>

@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
         }
 
         Set<Role> roles = new HashSet<>();
-        for (String roleName : userDto.getRoleNames()) {
-            roles.add(roleService.findRoleByName(roleName)
+        for (String roleName : userDto.getRoleDtoNames()) {
+            roles.add(roleService.findRoleByDtoName(roleName)
                     .orElseThrow(() -> new RoleNotFoundException(roleName))
             );
         }
@@ -86,8 +86,8 @@ public class UserServiceImpl implements UserService {
         }
 
         Set<Role> roles = new HashSet<>();
-        for (String roleName : userDto.getRoleNames()) {
-            roles.add(roleService.findRoleByName(roleName)
+        for (String roleName : userDto.getRoleDtoNames()) {
+            roles.add(roleService.findRoleByDtoName(roleName)
                     .orElseThrow(() -> new RoleNotFoundException(roleName))
             );
         }

@@ -20,12 +20,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Transactional(readOnly = true)
     @Override
-    public Optional<Role> findRoleByName(String name) {
-        return roleRepository.findByName(name);
+    public Optional<Role> findRoleByDtoName(String name) {
+        return roleRepository.findByName("ROLE_" + name);
     }
 
     @Override
-    public Set<String> findAllRolesNames() {
-        return roleRepository.findAll().stream().map(Role::getName).collect(Collectors.toSet());
+    public Set<String> findAllRoleDtoNames() {
+        return roleRepository.findAll().stream().map(Role::getRoleDtoName).collect(Collectors.toSet());
     }
 }

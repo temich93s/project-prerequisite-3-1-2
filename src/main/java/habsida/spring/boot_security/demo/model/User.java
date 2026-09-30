@@ -148,10 +148,7 @@ public class User implements UserDetails {
         UserDto userDto = new UserDto();
         userDto.setId(id);
         userDto.setUsername(username);
-        userDto.setRoleNames(roles.stream()
-                .map(role -> role.getName().replace("ROLE_", ""))
-                .collect(Collectors.toSet())
-        );
+        userDto.setRoleDtoNames(roles.stream().map(Role::getRoleDtoName).collect(Collectors.toSet()));
         userDto.setFirstName(firstName);
         userDto.setLastName(lastName);
         userDto.setAge(age);
