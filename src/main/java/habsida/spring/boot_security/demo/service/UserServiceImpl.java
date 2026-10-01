@@ -53,13 +53,13 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void addUser(UserDto userDto) {
-        if (userRepository.existsByUsername(userDto.getUsername())) {
-            throw new UserAlreadyExistsException(userDto.getUsername());
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new UserAlreadyExistsException(userDto.getEmail());
         }
 
         Set<Role> roles = new HashSet<>();
-        for (String roleName : userDto.getRoleNames()) {
-            roles.add(roleService.findRoleByName(roleName)
+        for (String roleName : userDto.getRoleDtoNames()) {
+            roles.add(roleService.findRoleByDtoName(roleName)
                     .orElseThrow(() -> new RoleNotFoundException(roleName))
             );
         }
@@ -80,19 +80,19 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new UserNotFoundException(String.valueOf(userDto.getId())));
 
-        Optional<User> userWithSameUsername = userRepository.findByUsername(userDto.getUsername());
+        Optional<User> userWithSameUsername = userRepository.findByEmail(userDto.getEmail());
         if (userWithSameUsername.isPresent() && userWithSameUsername.get().getId() != user.getId()) {
-            throw new UserAlreadyExistsException(userDto.getUsername());
+            throw new UserAlreadyExistsException(userDto.getEmail());
         }
 
         Set<Role> roles = new HashSet<>();
-        for (String roleName : userDto.getRoleNames()) {
-            roles.add(roleService.findRoleByName(roleName)
+        for (String roleName : userDto.getRoleDtoNames()) {
+            roles.add(roleService.findRoleByDtoName(roleName)
                     .orElseThrow(() -> new RoleNotFoundException(roleName))
             );
         }
 
-        user.setUsername(userDto.getUsername());
+        user.setEmail(userDto.getEmail());
         if (userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         }
@@ -100,7 +100,6 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userDto.getFirstName());
         user.setLastName(userDto.getLastName());
         user.setAge(userDto.getAge());
-        user.setEmail(userDto.getEmail());
 
         userRepository.save(user);
     }

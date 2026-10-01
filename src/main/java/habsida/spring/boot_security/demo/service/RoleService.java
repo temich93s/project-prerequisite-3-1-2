@@ -6,6 +6,6 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface RoleService {
-    Optional<Role> findRoleByName(String name);
-    Set<String> findAllRolesNames();
+    Optional<Role> findRoleByDtoName(String name);
+    Set<String> findAllRoleDtoNames();
 }

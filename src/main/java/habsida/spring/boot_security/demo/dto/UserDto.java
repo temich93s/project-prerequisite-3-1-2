@@ -12,13 +12,10 @@ import java.util.Set;
 public final class UserDto {
     private long id;
 
-    @NotBlank(message = "Username is required")
-    private String username;
-
     private String password;
 
     @NotEmpty(message = "Select at least one role")
-    private Set<String> roleNames;
+    private Set<String> roleDtoNames;
 
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -43,14 +40,6 @@ public final class UserDto {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -59,12 +48,12 @@ public final class UserDto {
         this.password = password;
     }
 
-    public Set<String> getRoleNames() {
-        return roleNames;
+    public Set<String> getRoleDtoNames() {
+        return roleDtoNames;
     }
 
-    public void setRoleNames(Set<String> roleNames) {
-        this.roleNames = roleNames;
+    public void setRoleDtoNames(Set<String> roleDtoNames) {
+        this.roleDtoNames = roleDtoNames;
     }
 
     public String getFirstName() {
@@ -104,7 +93,6 @@ public final class UserDto {
     public User toUser(Set<Role> roles) {
         User user = new User();
         user.setId(id);
-        user.setUsername(username);
         user.setPassword(password);
         user.setRoles(roles);
         user.setFirstName(firstName);
@@ -112,5 +100,9 @@ public final class UserDto {
         user.setAge(age);
         user.setEmail(email);
         return user;
+    }
+
+    public String getRoleDtoNamesAsString() {
+        return "[" + String.join(", ", roleDtoNames) + "]";
     }
 }

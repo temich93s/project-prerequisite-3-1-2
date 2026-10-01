@@ -12,6 +12,11 @@ public class MainController {
         return "index";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @GetMapping(value = "/accessDenied")
     public String accessDenied() {
         return "accessDenied";
