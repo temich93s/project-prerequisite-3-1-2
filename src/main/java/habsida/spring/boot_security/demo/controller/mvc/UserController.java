@@ -1,4 +1,4 @@
-package habsida.spring.boot_security.demo.controller;
+package habsida.spring.boot_security.demo.controller.mvc;
 
 import habsida.spring.boot_security.demo.dto.UserDto;
 import habsida.spring.boot_security.demo.model.User;
