@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -43,41 +40,93 @@
 
         <main class="col-10 bg-light min-vh-100 p-4">
             <div id="adminPanel" class="d-none">
-            <h2>Admin panel</h2>
+                <h2>Admin panel</h2>
 
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a th:href="@{/admin/userList}" class="nav-link active">All Users</a>
-                </li>
-                <li class="nav-item">
-                    <a th:href="@{/admin/addUser}" class="nav-link">New User</a>
-                </li>
-            </ul>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <button id="allUsersPanelTabButton" type="button" class="nav-link active">All Users</button>
+                    </li>
+                    <li class="nav-item">
+                        <button id="addUserPanelTabButton" type="button" class="nav-link">New User</button>
+                    </li>
+                </ul>
 
-            <div class="card rounded-0">
-                <div class="card-header fw-bold">All Users</div>
+                <div id="allUsersPanelTab" class="d-none">
+                    <div class="card rounded-0">
+                        <div class="card-header fw-bold">All Users</div>
 
-                <div class="card-body">
-                    <table class="table table-striped" id="usersTable">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Age</th>
-                            <th>Email</th>
-                            <th>Roles</th>
-                            <th>Edit</th>
-                            <th>Delete</th>
-                        </tr>
-                        </thead>
+                        <div class="card-body">
+                            <table id="usersTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Age</th>
+                                        <th>Email</th>
+                                        <th>Roles</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
 
-                        <tbody id="usersTableBody"></tbody>
-                    </table>
+                                <tbody id="usersTableBody"></tbody>
+                            </table>
 
-                    <p id="message" class="text-start text-info"></p>
+                            <p id="usersMessage" class="text-start text-info"></p>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <div id="addUserPanelTab" class="d-none">
+                    <div class="card rounded-0">
+                        <div class="card-header fw-bold">Add new users</div>
+
+                        <div class="card-body">
+                            <form id="addUserForm" class="d-flex flex-column align-items-center">
+                                <div class="mb-3 w-50 text-center">
+                                    <label class="form-label fw-bold">FirstName</label>
+                                    <input id="addFirstName" class="form-control" type="text">
+                                    <label id="addFirstNameError" class="form-label text-danger"></label>
+                                </div>
+
+                                <div class="mb-3 w-50 text-center">
+                                    <label class="form-label fw-bold">LastName</label>
+                                    <input id="addLastName" class="form-control" type="text">
+                                    <label id="addLastNameError" class="form-label text-danger"></label>
+                                </div>
+
+                                <div class="mb-3 w-50 text-center">
+                                    <label class="form-label fw-bold">Age</label>
+                                    <input id="addAge" class="form-control" type="number">
+                                    <label id="addAgeError" class="form-label text-danger"></label>
+                                </div>
+
+                                <div class="mb-3 w-50 text-center">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input id="addEmail" class="form-control" type="email">
+                                    <label id="addEmailError" class="form-label text-danger"></label>
+                                </div>
+
+                                <div class="mb-3 w-50 text-center">
+                                    <label class="form-label fw-bold">Password</label>
+                                    <input id="addPassword" class="form-control" type="password">
+                                    <label id="addPasswordError" class="form-label text-danger"></label>
+                                </div>
+
+                                <div class="mb-3 w-50 text-center">
+                                    <label class="form-label fw-bold">Roles</label>
+                                    <select id="addRoles" class="form-select" multiple size="2"></select>
+                                    <label id="addRolesError" class="form-label text-danger"></label>
+                                </div>
+
+                                <p id="addUserMessage" class="text-start text-info"></p>
+
+                                <button type="submit" class="btn btn-success">Add new user</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="userPanel" class="d-none">
@@ -118,10 +167,15 @@
 <script src="/js/components/deleteUserModal.js"></script>
 <script src="/js/components/modals.js"></script>
 
+<script src="/js/roles.js"></script>
 <script src="/js/auth.js"></script>
-<script src="/js/users.js"></script>
+<script src="/js/validation.js"></script>
 <script src="/js/tabs.js"></script>
-<script src="/js/userPanel.js"></script>
+
+<script src="/js/panel/adminPanels.js"></script>
+<script src="/js/panel/allUsersPanel.js"></script>
+<script src="/js/panel/addUserPanel.js"></script>
+<script src="/js/panel/userPanel.js"></script>
 
 <script src="/js/main.js"></script>
 

@@ -23,6 +23,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/", "/accessDenied").permitAll()
 
                         .requestMatchers("/api/csrf", "/api/auth/me").authenticated()
+                        .requestMatchers("/api/roles").hasRole("ADMIN")
                         .requestMatchers("/api/users","/api/users/**").hasRole("ADMIN")
                         .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
 

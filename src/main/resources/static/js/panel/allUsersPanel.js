@@ -1,6 +1,6 @@
 async function loadUsers() {
     const tableBody = document.getElementById('usersTableBody');
-    const message = document.getElementById('message');
+    const message = document.getElementById('usersMessage');
 
     try {
         const response = await fetch('/api/users');
@@ -67,7 +67,6 @@ async function loadUsers() {
             deleteTd.appendChild(deleteButton);
             tr.appendChild(deleteTd);
 
-            // Добавляем строку в таблицу
             tableBody.appendChild(tr);
         }
 

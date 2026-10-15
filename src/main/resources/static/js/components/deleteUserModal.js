@@ -68,10 +68,10 @@ function initDeleteModal() {
 
             await loadUsers();
 
-            document.getElementById('message').textContent = 'User deleted successfully';
+            document.getElementById('usersMessage').textContent = 'User deleted successfully';
         } catch (error) {
             console.error(error);
-            document.getElementById('message').textContent = error.message;
+            document.getElementById('usersMessage').textContent = error.message;
         } finally {
             deleteButton.disabled = false;
         }

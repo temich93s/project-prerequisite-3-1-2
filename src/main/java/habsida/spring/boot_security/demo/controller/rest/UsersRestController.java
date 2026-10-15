@@ -1,10 +1,12 @@
 package habsida.spring.boot_security.demo.controller.rest;
 
 import habsida.spring.boot_security.demo.dto.UserDto;
-import habsida.spring.boot_security.demo.service.RoleService;
+import habsida.spring.boot_security.demo.dto.validation.OnCreate;
 import habsida.spring.boot_security.demo.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +15,8 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UsersRestController {
     private UserService userService;
-    private RoleService roleService;
 
-    public UsersRestController(UserService userService, RoleService roleService) {
+    public UsersRestController(UserService userService) {
         this.userService = userService;
     }
 
@@ -34,6 +35,12 @@ public class UsersRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {
         userService.removeUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/addUser")
+    public ResponseEntity<Void> addUser(@Validated({Default.class, OnCreate.class}) @RequestBody UserDto userDto) {
+        userService.addUser(userDto);
         return ResponseEntity.noContent().build();
     }
 }

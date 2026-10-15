@@ -4,7 +4,7 @@ let selectedUserId = null;
 function openEditModal(user) {
     selectedUserId = user.id;
 
-    clearValidationErrors();
+    clearValidationErrors(editValidationFields);
 
     const errorBox = document.getElementById('editError');
     errorBox.textContent = '';
@@ -33,7 +33,7 @@ function initEditModal() {
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        clearValidationErrors();
+        clearValidationErrors(editValidationFields);
 
         const errorBox = document.getElementById('editError');
         errorBox.textContent = '';
@@ -47,12 +47,10 @@ function initEditModal() {
 
         submitButton.disabled = true;
 
-        // Получаем выбранные роли
         const roles = Array.from(
             document.getElementById('editRoles').selectedOptions
         ).map(option => option.value);
 
-        // Собираем данные пользователя
         const userData = {
             firstName: document.getElementById('editFirstName').value,
             lastName: document.getElementById('editLastName').value,
@@ -94,7 +92,7 @@ function initEditModal() {
                     const data = await response.json();
 
                     if (response.status === 400 && !('detail' in data)) {
-                        showValidationErrors(data);
+                        showValidationErrors(data, editValidationFields);
                         return;
                     }
 
@@ -112,41 +110,23 @@ function initEditModal() {
 
             selectedUserId = null;
 
-            // Обновляем таблицу
             await loadUsers();
 
-            document.getElementById('message').textContent = 'User updated successfully';
+            document.getElementById('usersMessage').textContent = 'User updated successfully';
 
         } catch (error) {
             console.error(error);
-            document.getElementById('message').textContent = error.message;
+            document.getElementById('usersMessage').textContent = error.message;
         } finally {
             submitButton.disabled = false;
         }
     });
 }
 
-const validationFields = {
+const editValidationFields = {
     firstName: 'editFirstName',
     lastName: 'editLastName',
     age: 'editAge',
     email: 'editEmail',
     roleDtoNames: 'editRoles'
 };
-
-function clearValidationErrors() {
-    for (const [field, inputId] of Object.entries(validationFields)) {
-        document.getElementById(`${field}Error`).textContent = '';
-        document.getElementById(inputId).classList.remove('is-invalid');
-    }
-}
-
-function showValidationErrors(errors) {
-    for (const [field, message] of Object.entries(errors)) {
-        const inputId = validationFields[field];
-        if (!inputId) continue;
-
-        document.getElementById(`${field}Error`).textContent = message;
-        document.getElementById(inputId).classList.add('is-invalid');
-    }
-}

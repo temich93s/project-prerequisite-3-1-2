@@ -7,12 +7,15 @@ async function main() {
     renderCurrentUser(user);
 
     if (user.roles.includes('ADMIN')) {
-        await loadModals();
-
-        initEditModal();
-        initDeleteModal();
+        initAdminPanel();
 
         await loadUsers();
+        await loadModals();
+        await loadRoles();
+
+        initAddUser();
+        initEditModal();
+        initDeleteModal();
     }
 }
 

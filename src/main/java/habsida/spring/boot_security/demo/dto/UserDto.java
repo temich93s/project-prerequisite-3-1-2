@@ -1,5 +1,6 @@
 package habsida.spring.boot_security.demo.dto;
 
+import habsida.spring.boot_security.demo.dto.validation.OnCreate;
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
 import jakarta.validation.constraints.Email;
@@ -12,6 +13,7 @@ import java.util.Set;
 public final class UserDto {
     private long id;
 
+    @NotBlank(message = "Password is required", groups = OnCreate.class)
     private String password;
 
     @NotEmpty(message = "Select at least one role")
