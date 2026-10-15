@@ -36,12 +36,13 @@
     <div class="row">
         <div class="col-2 bg-white min-vh-100 pt-3 px-0">
             <div class="nav nav-pills flex-column w-100 text-center">
-                <a sec:authorize="hasRole('ADMIN')" th:href="@{/admin/userList}" class="nav-link active rounded-0">Admin</a>
-                <a sec:authorize="hasAnyRole('ADMIN', 'USER')" th:href="@{/user}" class="nav-link rounded-0">User</a>
+                <button id="adminTab" type="button" class="nav-link active rounded-0 d-none">Admin</button>
+                <button id="userTab" type="button" class="nav-link active rounded-0">User</button>
             </div>
         </div>
 
         <main class="col-10 bg-light min-vh-100 p-4">
+            <div id="adminPanel" class="d-none">
             <h2>Admin panel</h2>
 
             <ul class="nav nav-tabs">
@@ -77,6 +78,32 @@
                     <p id="message" class="text-start text-info"></p>
                 </div>
             </div>
+            </div>
+
+            <div id="userPanel" class="d-none">
+                <h2>User Information Page</h2>
+
+                <div class="card rounded-0">
+                    <div class="card-header fw-bold">About User</div>
+
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Age</th>
+                                <th>Email</th>
+                                <th>Roles</th>
+                            </tr>
+                            </thead>
+
+                            <tbody id="currentUserTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 </div>
@@ -93,6 +120,9 @@
 
 <script src="/js/auth.js"></script>
 <script src="/js/users.js"></script>
+<script src="/js/tabs.js"></script>
+<script src="/js/userPanel.js"></script>
+
 <script src="/js/main.js"></script>
 
 </body>

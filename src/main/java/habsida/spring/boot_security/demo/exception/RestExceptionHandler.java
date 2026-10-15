@@ -1,4 +1,3 @@
-
 package habsida.spring.boot_security.demo.exception;
 
 import org.springframework.http.HttpStatus;
@@ -10,16 +9,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-@RestControllerAdvice(basePackages =
-        "habsida.spring.boot_security.demo.controller.rest")
+@RestControllerAdvice(basePackages = "habsida.spring.boot_security.demo.controller.rest")
 public class RestExceptionHandler {
 
     // Пользователь не найден — 404
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleUserNotFound(
-            UserNotFoundException ex) {
+    public ResponseEntity<ProblemDetail> handleUserNotFound(UserNotFoundException ex) {
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.NOT_FOUND,
@@ -28,15 +24,12 @@ public class RestExceptionHandler {
 
         problem.setTitle("User Not Found");
 
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(problem);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problem);
     }
 
     // Email уже существует — 409
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ProblemDetail> handleUserAlreadyExists(
-            UserAlreadyExistsException ex) {
+    public ResponseEntity<ProblemDetail> handleUserAlreadyExists(UserAlreadyExistsException ex) {
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.CONFLICT,
@@ -45,15 +38,12 @@ public class RestExceptionHandler {
 
         problem.setTitle("User Already Exists");
 
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(problem);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
     }
 
     // Роль не найдена — 400
     @ExceptionHandler(RoleNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handleRoleNotFound(
-            RoleNotFoundException ex) {
+    public ResponseEntity<ProblemDetail> handleRoleNotFound(RoleNotFoundException ex) {
 
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
@@ -62,21 +52,17 @@ public class RestExceptionHandler {
 
         problem.setTitle("Role Not Found");
 
-        return ResponseEntity
-                .badRequest()
-                .body(problem);
+        return ResponseEntity.badRequest().body(problem);
     }
 
     // Ошибки @Valid — 400
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidation(MethodArgumentNotValidException ex) {
+
         Map<String, String> errors = new LinkedHashMap<>();
 
         ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.putIfAbsent(
-                        error.getField(),
-                        error.getDefaultMessage()
-                )
+                errors.putIfAbsent(error.getField(), error.getDefaultMessage())
         );
 
         return ResponseEntity.badRequest().body(errors);

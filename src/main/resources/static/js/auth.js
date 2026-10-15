@@ -18,4 +18,6 @@ async function loadCurrentUser() {
 
     document.getElementById('currentUserEmail').textContent = user.email;
     document.getElementById('currentUserRoles').textContent = `[${user.roles.join(', ')}]`;
+
+    return user;
 }

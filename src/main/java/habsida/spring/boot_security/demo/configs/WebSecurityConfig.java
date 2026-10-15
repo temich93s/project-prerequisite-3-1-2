@@ -21,10 +21,14 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/accessDenied").permitAll()
+
+                        .requestMatchers("/api/csrf", "/api/auth/me").authenticated()
+                        .requestMatchers("/api/users","/api/users/**").hasRole("ADMIN")
+                        .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/user/**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers("/api/csrf").authenticated()
-                        .requestMatchers("/api/**").hasAnyRole("ADMIN", "USER")
+
                         .requestMatchers("/users-api.html").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
