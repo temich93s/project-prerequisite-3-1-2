@@ -30,7 +30,7 @@ function initAddUser() {
             const csrf = await getCsrf();
 
             const response = await fetch(
-                `/api/users/addUser`,
+                `/api/users`,
                 {
                     method: 'POST',
                     headers: {

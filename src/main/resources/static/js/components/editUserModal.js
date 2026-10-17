@@ -89,6 +89,7 @@ function initEditModal() {
 
                     if (response.status === 400 && !('detail' in data)) {
                         showValidationErrors(data, editValidationFields);
+                        submitButton.disabled = false;
                         return;
                     }
 

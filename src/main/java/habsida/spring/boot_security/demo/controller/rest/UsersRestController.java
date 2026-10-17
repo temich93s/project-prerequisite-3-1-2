@@ -29,6 +29,12 @@ public class UsersRestController {
         return userService.getUsers();
     }
 
+    @PostMapping
+    public ResponseEntity<UserDto> addUser(@Validated({Default.class, OnCreate.class}) @RequestBody UserDto userDto) {
+        UserDto user = userService.addUser(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable long id, @Valid @RequestBody UserDto userDto) {
         userDto.setId(id);
@@ -45,12 +51,6 @@ public class UsersRestController {
         }
 
         userService.removeUserById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/addUser")
-    public ResponseEntity<Void> addUser(@Validated({Default.class, OnCreate.class}) @RequestBody UserDto userDto) {
-        userService.addUser(userDto);
         return ResponseEntity.noContent().build();
     }
 }

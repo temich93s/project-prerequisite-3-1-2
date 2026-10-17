@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void addUser(UserDto userDto) {
+    public UserDto addUser(UserDto userDto) {
         if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new UserAlreadyExistsException(userDto.getEmail());
         }
@@ -63,8 +63,12 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new RoleNotFoundException(roleName))
             );
         }
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userRepository.save(userDto.toUser(roles));
+
+        User user = userDto.toUser(roles);
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User savedUser = userRepository.save(user);
+
+        return savedUser.toUserDtoWithoutPassword();
     }
 
     @Transactional

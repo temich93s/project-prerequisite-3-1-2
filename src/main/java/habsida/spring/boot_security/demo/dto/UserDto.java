@@ -1,5 +1,7 @@
 package habsida.spring.boot_security.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import habsida.spring.boot_security.demo.dto.validation.OnCreate;
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
@@ -14,6 +16,7 @@ public final class UserDto {
     private long id;
 
     @NotBlank(message = "Password is required", groups = OnCreate.class)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @NotEmpty(message = "Select at least one role")
@@ -104,6 +107,7 @@ public final class UserDto {
         return user;
     }
 
+    @JsonIgnore
     public String getRoleDtoNamesAsString() {
         return "[" + String.join(", ", roleDtoNames) + "]";
     }
