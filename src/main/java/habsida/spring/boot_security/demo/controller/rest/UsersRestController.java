@@ -35,6 +35,11 @@ public class UsersRestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable long id) {
+        return userService.getUserById(id);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateUser(@PathVariable long id, @Valid @RequestBody UserDto userDto) {
         userDto.setId(id);

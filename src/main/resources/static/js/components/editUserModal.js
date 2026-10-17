@@ -117,6 +117,10 @@ function initEditModal() {
             console.error(error);
         }
 
+        // Обновляем шапку с указанием текущего пользователя
+        const currentUser = await loadCurrentUser();
+        renderCurrentUser(currentUser);
+
         // закрываем модальное окно
         selectedUserId = null;
         submitButton.disabled = false;

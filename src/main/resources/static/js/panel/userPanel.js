@@ -9,7 +9,7 @@ function renderCurrentUser(user) {
         user.lastName,
         user.age,
         user.email,
-        user.roles.join(', ')
+        user.roleDtoNames.join(', ')
     ];
 
     for (const value of values) {

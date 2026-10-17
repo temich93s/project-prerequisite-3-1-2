@@ -17,7 +17,7 @@ async function loadCurrentUser() {
     const user = await response.json();
 
     document.getElementById('currentUserEmail').textContent = user.email;
-    document.getElementById('currentUserRoles').textContent = `[${user.roles.join(', ')}]`;
+    document.getElementById('currentUserRoles').textContent = `[${user.roleDtoNames.join(', ')}]`;
 
     return user;
 }

@@ -6,7 +6,7 @@ async function main() {
     initTabs(user);
     renderCurrentUser(user);
 
-    if (user.roles.includes('ADMIN')) {
+    if (user.roleDtoNames.includes('ADMIN')) {
         initAdminPanel();
 
         await loadModals();

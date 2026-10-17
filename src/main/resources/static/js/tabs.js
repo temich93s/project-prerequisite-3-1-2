@@ -13,7 +13,7 @@ function showTab(tabName) {
 }
 
 function initTabs(user) {
-    const isAdmin = user.roles.includes('ADMIN');
+    const isAdmin = user.roleDtoNames.includes('ADMIN');
 
     const adminTab = document.getElementById('adminTab');
 
