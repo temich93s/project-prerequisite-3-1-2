@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -66,5 +67,16 @@ public class RestExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    // Обрабатывает HTTP-исключения и возвращает статус и сообщение об ошибке в формате JSON.
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ProblemDetail> handleResponseStatusException(ResponseStatusException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                ex.getStatusCode(),
+                ex.getReason() != null ? ex.getReason() : "Request failed"
+        );
+
+        return ResponseEntity.status(ex.getStatusCode()).body(problem);
     }
 }

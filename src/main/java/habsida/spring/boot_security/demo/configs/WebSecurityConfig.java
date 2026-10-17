@@ -1,5 +1,6 @@
 package habsida.spring.boot_security.demo.configs;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +41,22 @@ public class WebSecurityConfig {
                         .permitAll()
                 )
                 .exceptionHandling(exception -> exception
-                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                        // Для API: 401, если пользователь не авторизован
+                        .defaultAuthenticationEntryPointFor(
+                                (request, response, authException) ->
+                                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED),
+                                PathPatternRequestMatcher.withDefaults().matcher("/api/**")
+                        )
+
+                        // Для API: 403, если доступ запрещён
+                        .defaultAccessDeniedHandlerFor(
+                                (request, response, accessDeniedException) ->
+                                        response.sendError(HttpServletResponse.SC_FORBIDDEN),
+                                PathPatternRequestMatcher.withDefaults().matcher("/api/**")
+                        )
+
+                        // Для обычных страниц
+                        .accessDeniedHandler((request, response, ex) ->
                                 response.sendRedirect("/accessDenied")
                         )
                 )
