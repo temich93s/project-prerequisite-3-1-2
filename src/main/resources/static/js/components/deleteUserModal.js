@@ -31,29 +31,9 @@ function initDeleteModal() {
         deleteButton.disabled = true;
 
         try {
-            const csrf = await getCsrf();
-
-            const response = await fetch(
-                `/api/users/${deleteUserId}`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        [csrf.headerName]: csrf.token
-                    }
-                }
-            );
-
-            if (response.redirected) {
-                throw new Error('Authentication required');
-            }
-
-            if (!response.ok) {
-                const problem = await response.json();
-
-                throw new Error(
-                    problem.detail || `Delete failed: ${response.status}`
-                );
-            }
+            await apiFetch(`/api/users/${deleteUserId}`, {
+                method: 'DELETE'
+            });
         } catch (error) {
             showMessage('deleteError', error.message, AlertType.DANGER);
             deleteButton.disabled = false;

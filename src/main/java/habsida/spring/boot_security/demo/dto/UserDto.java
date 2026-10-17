@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import habsida.spring.boot_security.demo.dto.validation.OnCreate;
 import habsida.spring.boot_security.demo.model.Role;
 import habsida.spring.boot_security.demo.model.User;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.*;
 
 import java.util.Set;
 
@@ -29,6 +26,7 @@ public final class UserDto {
     private String lastName;
 
     @Min(value = 1, message = "Age must be at least 1")
+    @Max(value = 150, message = "Age must not exceed 150")
     private int age;
 
     @NotBlank(message = "Email is required")

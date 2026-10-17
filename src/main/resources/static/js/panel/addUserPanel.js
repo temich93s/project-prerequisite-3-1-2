@@ -27,50 +27,24 @@ function initAddUser() {
         };
 
         try {
-            const csrf = await getCsrf();
+            await apiFetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
 
-            const response = await fetch(
-                `/api/users`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrf.headerName]: csrf.token
-                    },
-                    body: JSON.stringify(userData)
-                }
-            );
-
-            if (response.redirected) {
-                throw new Error('Authentication required');
-            }
-
-            if (!response.ok) {
-                const contentType = response.headers.get('content-type') || '';
-
-                if (contentType.includes('json')) {
-                    const data = await response.json();
-
-                    if (response.status === 400 && !('detail' in data)) {
-                        showValidationErrors(data, addValidationFields);
-                        return;
-                    }
-
-                    throw new Error(
-                        data.detail || `Add failed: ${response.status}`
-                    );
-                }
-
-                throw new Error(`Add failed: ${response.status}`);
-            }
-
-            document.getElementById('addUserForm').reset();
-
+            form.reset();
             await loadUsers();
             showAdminPanel(TabNames.ALL_USERS);
-
             showMessage('usersMessage', 'User added successfully', AlertType.SUCCESS);
         } catch (error) {
+            if (error.validationErrors) {
+                showValidationErrors(error.validationErrors, addValidationFields);
+                return;
+            }
+
             showMessage('addUserMessage', error.message, AlertType.DANGER);
             console.error(error);
         } finally {

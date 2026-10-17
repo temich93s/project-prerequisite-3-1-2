@@ -2,16 +2,7 @@ async function loadUsers() {
     const tableBody = document.getElementById('usersTableBody');
 
     try {
-        const response = await fetch('/api/users');
-
-        if (!response.ok) {
-            const problem = await response.json();
-
-            throw new Error(
-                problem.detail || `HTTP error: ${response.status}`
-            );
-        }
-
+        const response = await apiFetch('/api/users');
         const users = await response.json();
 
         tableBody.replaceChildren();

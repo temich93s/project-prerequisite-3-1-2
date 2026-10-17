@@ -63,47 +63,23 @@ function initEditModal() {
         }
 
         try {
-            const csrf = await getCsrf();
+            await apiFetch(`/api/users/${selectedUserId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
 
-            const response = await fetch(
-                `/api/users/${selectedUserId}`,
-                {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrf.headerName]: csrf.token
-                    },
-                    body: JSON.stringify(userData)
-                }
-            );
-
-            if (response.redirected) {
-                throw new Error('Authentication required');
-            }
-
-            if (!response.ok) {
-                const contentType = response.headers.get('content-type') || '';
-
-                if (contentType.includes('json')) {
-                    const data = await response.json();
-
-                    if (response.status === 400 && !('detail' in data)) {
-                        showValidationErrors(data, editValidationFields);
-                        submitButton.disabled = false;
-                        return;
-                    }
-
-                    throw new Error(
-                        data.detail || `Update failed: ${response.status}`
-                    );
-                }
-
-                throw new Error(`Update failed: ${response.status}`);
-            }
         } catch (error) {
-            showMessage('editError', error.message, AlertType.DANGER);
+            if (error.validationErrors) {
+                showValidationErrors(error.validationErrors, editValidationFields);
+            } else {
+                showMessage('editError', error.message, AlertType.DANGER);
+                console.error(error);
+            }
+
             submitButton.disabled = false;
-            console.error(error);
             return;
         }
 
