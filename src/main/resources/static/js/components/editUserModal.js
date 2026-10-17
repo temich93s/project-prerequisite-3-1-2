@@ -6,9 +6,7 @@ function openEditModal(user) {
 
     clearValidationErrors(editValidationFields);
 
-    const errorBox = document.getElementById('editError');
-    errorBox.textContent = '';
-    errorBox.classList.add('d-none');
+    hideMessage('editError');
 
     document.getElementById('editId').value = user.id;
     document.getElementById('editFirstName').value = user.firstName;
@@ -35,9 +33,7 @@ function initEditModal() {
 
         clearValidationErrors(editValidationFields);
 
-        const errorBox = document.getElementById('editError');
-        errorBox.textContent = '';
-        errorBox.classList.add('d-none');
+        hideMessage('editError');
         
         if (selectedUserId === null) {
             return;
@@ -103,23 +99,27 @@ function initEditModal() {
 
                 throw new Error(`Update failed: ${response.status}`);
             }
+        } catch (error) {
+            showMessage('editError', error.message, AlertType.DANGER);
+            submitButton.disabled = false;
+            console.error(error);
+            return;
+        }
 
-            bootstrap.Modal.getInstance(
-                document.getElementById('editModal')
-            ).hide();
-
-            selectedUserId = null;
-
+        // Обновляем таблицу после успешного обновления пользователя
+        try {
             await loadUsers();
-
-            document.getElementById('usersMessage').textContent = 'User updated successfully';
+            showMessage('usersMessage', 'User updated successfully', AlertType.SUCCESS);
 
         } catch (error) {
+            showMessage('usersMessage', 'User updated, but table refresh failed', AlertType.WARNING);
             console.error(error);
-            document.getElementById('usersMessage').textContent = error.message;
-        } finally {
-            submitButton.disabled = false;
         }
+
+        // закрываем модальное окно
+        selectedUserId = null;
+        submitButton.disabled = false;
+        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
     });
 }
 

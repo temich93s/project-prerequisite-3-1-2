@@ -7,6 +7,8 @@ function initAddUser() {
 
         clearValidationErrors(addValidationFields);
 
+        hideMessage('addUserMessage');
+
         const submitButton = form.querySelector('button[type="submit"]');
 
         submitButton.disabled = true;
@@ -55,20 +57,22 @@ function initAddUser() {
                     }
 
                     throw new Error(
-                        data.detail || `Update failed: ${response.status}`
+                        data.detail || `Add failed: ${response.status}`
                     );
                 }
 
-                throw new Error(`Update failed: ${response.status}`);
+                throw new Error(`Add failed: ${response.status}`);
             }
 
-            await loadUsers();
-
             document.getElementById('addUserForm').reset();
-            document.getElementById('addUserMessage').textContent = 'User added successfully';
+
+            await loadUsers();
+            showAdminPanel(TabNames.ALL_USERS);
+
+            showMessage('usersMessage', 'User added successfully', AlertType.SUCCESS);
         } catch (error) {
+            showMessage('addUserMessage', error.message, AlertType.DANGER);
             console.error(error);
-            document.getElementById('addUserMessage').textContent = error.message;
         } finally {
             submitButton.disabled = false;
         }

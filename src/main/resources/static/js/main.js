@@ -9,13 +9,14 @@ async function main() {
     if (user.roles.includes('ADMIN')) {
         initAdminPanel();
 
-        await loadUsers();
         await loadModals();
         await loadRoles();
 
         initAddUser();
         initEditModal();
         initDeleteModal();
+
+        await loadUsers();
     }
 }
 

@@ -1,6 +1,5 @@
 async function loadUsers() {
     const tableBody = document.getElementById('usersTableBody');
-    const message = document.getElementById('usersMessage');
 
     try {
         const response = await fetch('/api/users');
@@ -16,7 +15,6 @@ async function loadUsers() {
         const users = await response.json();
 
         tableBody.replaceChildren();
-        message.textContent = '';
 
         for (const user of users) {
             const tr = document.createElement('tr');
@@ -71,7 +69,8 @@ async function loadUsers() {
         }
 
     } catch (error) {
-        message.textContent = 'Failed to load users';
+        showMessage('usersMessage', 'Failed to load users', AlertType.DANGER);
         console.error(error);
+        throw error;
     }
 }

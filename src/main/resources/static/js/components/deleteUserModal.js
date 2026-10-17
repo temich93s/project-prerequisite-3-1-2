@@ -4,11 +4,7 @@ let deleteUserId = null;
 function openDeleteModal(user) {
     deleteUserId = user.id;
 
-    clearValidationErrors();
-
-    const errorBox = document.getElementById('deleteError');
-    errorBox.textContent = '';
-    errorBox.classList.add('d-none');
+    hideMessage('deleteError');
 
     document.getElementById('deleteId').value = user.id;
     document.getElementById('deleteFirstName').value = user.firstName;
@@ -25,11 +21,8 @@ function initDeleteModal() {
     const deleteButton = document.getElementById('confirmDeleteButton');
 
     deleteButton.addEventListener('click', async () => {
-        clearValidationErrors();
 
-        const errorBox = document.getElementById('deleteError');
-        errorBox.textContent = '';
-        errorBox.classList.add('d-none');
+        hideMessage('deleteError');
 
         if (deleteUserId === null) {
             return;
@@ -61,19 +54,26 @@ function initDeleteModal() {
                     problem.detail || `Delete failed: ${response.status}`
                 );
             }
-
-            bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
-
-            deleteUserId = null;
-
-            await loadUsers();
-
-            document.getElementById('usersMessage').textContent = 'User deleted successfully';
         } catch (error) {
-            console.error(error);
-            document.getElementById('usersMessage').textContent = error.message;
-        } finally {
+            showMessage('deleteError', error.message, AlertType.DANGER);
             deleteButton.disabled = false;
+            console.error(error);
+            return;
         }
+
+        // Обновляем таблицу после успешного удаления пользователя
+        try {
+            await loadUsers();
+            showMessage('usersMessage', 'User deleted successfully', AlertType.SUCCESS);
+
+        } catch (error) {
+            showMessage('usersMessage', 'User deleted, but table refresh failed', AlertType.WARNING);
+            console.error(error);
+        }
+
+        // закрываем модальное окно
+        deleteUserId = null;
+        deleteButton.disabled = false;
+        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
     });
 }

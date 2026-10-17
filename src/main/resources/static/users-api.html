@@ -73,7 +73,7 @@
                                 <tbody id="usersTableBody"></tbody>
                             </table>
 
-                            <p id="usersMessage" class="text-start text-info"></p>
+                            <div id="usersMessage" class="alert alert-danger d-none" data-alert-type="danger" role="alert"></div>
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                                     <label id="addRolesError" class="form-label text-danger"></label>
                                 </div>
 
-                                <p id="addUserMessage" class="text-start text-info"></p>
+                                <div id="addUserMessage" class="alert alert-danger d-none" data-alert-type="danger" role="alert"></div>
 
                                 <button type="submit" class="btn btn-success">Add new user</button>
                             </form>
@@ -167,6 +167,7 @@
 <script src="/js/components/deleteUserModal.js"></script>
 <script src="/js/components/modals.js"></script>
 
+<script src="/js/messages.js"></script>
 <script src="/js/roles.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/validation.js"></script>
